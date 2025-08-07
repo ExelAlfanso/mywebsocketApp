@@ -4,6 +4,10 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  roomID: {
+    type: String,
+    required: true,
+  },
   content: { type: String, required: true },
   timeStamp: { type: Date, default: Date.now },
 });
