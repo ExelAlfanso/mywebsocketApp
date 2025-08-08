@@ -27,7 +27,7 @@ export const login = async (req, res) => {
     const cookieStr = serialize("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
@@ -66,7 +66,7 @@ export const register = async (req, res) => {
     const cookieStr = serialize("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
