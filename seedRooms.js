@@ -17,6 +17,7 @@ async function seedRooms() {
       { roomID: "tech", name: "Tech Talk" },
       { roomID: "music", name: "Music Lovers" },
       { roomID: "study", name: "Study Room" },
+      { roomID: "invest", name: "Invest Room" },
     ];
 
     for (const room of testRooms) {
@@ -28,7 +29,6 @@ async function seedRooms() {
         console.log(`✅ Inserted "${room.name}"`);
       }
     }
-    await ChatRoom.insertMany(testRooms);
     console.log("✅ Inserted test rooms");
 
     mongoose.disconnect();

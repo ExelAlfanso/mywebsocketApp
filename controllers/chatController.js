@@ -3,7 +3,7 @@ import ChatRoom from "../models/ChatRoom.js";
 export const messages = async (req, res) => {
   try {
     const { roomID } = req.query;
-    if (!roomID) return res.status(400).json({ message: "roomId required" });
+    if (!roomID) return res.status(400).json({ message: "roomID required" });
     const messages = await Message.find({ roomID });
     return res.status(200).json({ messages });
   } catch (err) {
