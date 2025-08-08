@@ -1,5 +1,3 @@
-// controllers/authController.js
-
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
@@ -27,7 +25,7 @@ export const login = async (req, res) => {
     const cookieStr = serialize("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
@@ -66,7 +64,7 @@ export const register = async (req, res) => {
     const cookieStr = serialize("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
@@ -93,7 +91,7 @@ export const logout = (req, res) => {
   const serialized = serialize("token", "", {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
     path: "/",
     maxAge: 0,
   });
