@@ -11,13 +11,17 @@ import socketHandler from "./socketHandler.js";
 dotenv.config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 
 const server = http.createServer(app);
 
+const allowedOrigins = [
+  `http://localhost:3000`,
+  "https://chatify-roan.vercel.app",
+];
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -27,7 +31,7 @@ socketHandler(io);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   })
