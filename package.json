@@ -2,6 +2,7 @@
   "name": "mywebsocketapp",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
@@ -12,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.55.0",
     "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",
     "cors": "^2.8.5",
@@ -20,6 +22,7 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.0",
+    "multer": "^2.0.2",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {

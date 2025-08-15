@@ -2,13 +2,15 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chat.js";
 import connectToDB from "./db.js";
 import socketHandler from "./socketHandler.js";
-
+import dotenv from "dotenv";
 dotenv.config();
+
+console.log("ENV FILE PATH:", process.cwd());
+console.log("JWT_SECRET from dotenv:", process.env.JWT_SECRET);
 
 const app = express();
 const port = process.env.PORT;

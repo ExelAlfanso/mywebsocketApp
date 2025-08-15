@@ -3,11 +3,11 @@ import ChatRoom from "../models/ChatRoom.js";
 export const messages = async (req, res) => {
   try {
     const { roomID } = req.query;
-    if (!roomID) return res.status(400).json({ message: "roomID required" });
+    if (!roomID) return res.status(400).json({ error: "roomID required" });
     const messages = await Message.find({ roomID });
     return res.status(200).json({ messages });
   } catch (err) {
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ error: err });
   }
 };
 
@@ -16,6 +16,6 @@ export const chatRooms = async (req, res) => {
     const rooms = await ChatRoom.find();
     return res.status(200).json({ rooms });
   } catch (err) {
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ error: err });
   }
 };

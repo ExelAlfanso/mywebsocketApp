@@ -7,7 +7,7 @@ export default function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "No cookies provided." });
 
   const parsedCookies = cookie.parse(cookies);
-  const token = parsedCookies.token;
+  const token = parsedCookies.accessToken;
 
   if (!token) return res.status(401).json({ message: "No token provided." });
 
