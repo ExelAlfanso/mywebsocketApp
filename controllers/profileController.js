@@ -34,3 +34,21 @@ export const uploadAvatar = async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const updateUser = async (req, res) => {
+  const { id, username, email } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { username, email },
+      { new: true, runValidators: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Update error: ", err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
