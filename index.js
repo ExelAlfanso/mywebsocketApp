@@ -10,8 +10,8 @@ import socketHandler from "./socketHandler.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("ENV FILE PATH:", process.cwd());
-console.log("JWT_SECRET from dotenv:", process.env.JWT_SECRET);
+// console.log("ENV FILE PATH:", process.cwd());
+// console.log("JWT_SECRET from dotenv:", process.env.JWT_SECRET);
 
 const app = express();
 const port = process.env.PORT;
@@ -25,7 +25,7 @@ const allowedOrigins = [
 export const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   },
 });
@@ -35,7 +35,7 @@ socketHandler(io);
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT"],
+    methods: ["GET", "POST", "PUT", "PATCH"],
     credentials: true,
   })
 );

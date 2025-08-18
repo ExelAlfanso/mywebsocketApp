@@ -82,12 +82,17 @@ export const register = async (req, res) => {
 export const me = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select(
-      "_id username email"
+      "_id username email avatar"
     );
     if (!user) return res.status(404).json({ error: "User not found." });
     return res
       .status(200)
-      .json({ id: user._id, username: user.username, email: user.email });
+      .json({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      });
   } catch (err) {
     return res.status(500).json({ error: "Something went wrong." });
   }

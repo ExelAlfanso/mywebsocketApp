@@ -7,11 +7,11 @@ import {
 import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-router.post(
-  "/upload-avatar/:userId",
+router.put(
+  "/:userId/avatar",
   authenticateToken,
   uploadAvatarMiddleware,
   uploadAvatar
 );
-router.put("/update", authenticateToken, updateUser);
+router.put("/:userId/update", authenticateToken, updateUser);
 export default router;

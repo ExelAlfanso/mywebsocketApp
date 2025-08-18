@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://example.com/default-avatar.png",
+      default: "",
     },
   },
   { timestamps: true }

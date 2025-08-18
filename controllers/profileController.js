@@ -13,7 +13,7 @@ export const uploadAvatar = async (req, res) => {
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    const fileName = `${Date.now()}-${file.originalName}`;
+    const fileName = `${userId}/${Date.now()}-${file.originalname}`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
@@ -22,7 +22,9 @@ export const uploadAvatar = async (req, res) => {
       });
 
     if (uploadError) {
-      return res.status(500).json({ error: uploadError.message });
+      return res
+        .status(500)
+        .json({ error: `Upload Error: ${uploadError.message}` });
     }
     const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
     const publicUrl = data.publicUrl;
@@ -36,17 +38,19 @@ export const uploadAvatar = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { id, username, email } = req.body;
+  const { userId } = req.params;
+  const { username, email } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      id,
+      userId,
       { username, email },
       { new: true, runValidators: true }
     );
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
+    return res.status(200).json({ message: "Sucessfully updated user!" });
   } catch (err) {
     console.error("Update error: ", err);
     res.status(500).json({ error: "Something went wrong" });
