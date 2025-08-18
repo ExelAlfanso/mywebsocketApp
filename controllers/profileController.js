@@ -1,6 +1,7 @@
 import multer from "multer";
 import supabase from "../supabaseClient.js";
 import User from "../models/User.js";
+import path from "path";
 
 const upload = multer({ storage: multer.memoryStorage() });
 export const uploadAvatarMiddleware = upload.single("avatar");
@@ -13,12 +14,14 @@ export const uploadAvatar = async (req, res) => {
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    const fileName = `${userId}/${Date.now()}-${file.originalname}`;
+    const ext = path.extname(file.originalname) || ".png";
+    const filePath = `${userId}/${userId}-profile${ext}`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(fileName, file.buffer, {
+      .upload(filePath, file.buffer, {
         contentType: file.mimetype,
+        upsert: true,
       });
 
     if (uploadError) {
@@ -26,11 +29,32 @@ export const uploadAvatar = async (req, res) => {
         .status(500)
         .json({ error: `Upload Error: ${uploadError.message}` });
     }
-    const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    const publicUrl = data.publicUrl;
 
-    await User.findByIdAndUpdate(userId, { avatar: publicUrl });
-    res.json({ success: true, avatarUrl: publicUrl });
+    await User.findByIdAndUpdate(userId, { avatar: filePath });
+    res.json({ success: true, avatar: filePath });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const getAvatarUrl = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user || !user.avatar) {
+      return res.status(404).json({ error: "Avatar not found" });
+    }
+
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(user.avatar, 60 * 60);
+    if (error)
+      return res
+        .status(500)
+        .json({ error: `Signed URL Error:${error.message}` });
+    return res.json({ avatarUrl: data.SignedUrl });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Something went wrong" });
@@ -39,12 +63,12 @@ export const uploadAvatar = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { userId } = req.params;
-  const { username, email } = req.body;
+  const { username, email, avatar } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { username, email },
+      { username, email, avatar },
       { new: true, runValidators: true }
     );
     if (!updatedUser) {

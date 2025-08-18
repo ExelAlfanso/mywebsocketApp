@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 import User from "../models/User.js";
-
+import supabase from "../supabaseClient.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -81,18 +81,22 @@ export const register = async (req, res) => {
 
 export const me = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select(
-      "_id username email avatar"
-    );
+    const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ error: "User not found." });
-    return res
-      .status(200)
-      .json({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-      });
+    let avatarUrl = null;
+    if (user.avatar) {
+      const { data } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(user.avatar, 60 * 60);
+      avatarUrl = data.signedUrl;
+    }
+
+    return res.status(200).json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      avatar: avatarUrl,
+    });
   } catch (err) {
     return res.status(500).json({ error: "Something went wrong." });
   }
