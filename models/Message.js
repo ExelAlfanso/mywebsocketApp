@@ -9,6 +9,7 @@ const messageSchema = new mongoose.Schema({
     required: true,
   },
   content: { type: String, required: true },
+  avatar: { type: String, required: true },
   timeStamp: { type: Date, default: Date.now },
 });
 const Message = mongoose.model("Message", messageSchema);

@@ -1,5 +1,4 @@
 import Message from "./models/Message.js";
-import mongoose from "mongoose";
 import ChatRoom from "./models/ChatRoom.js";
 export default async function socketHandler(io) {
   io.on("connection", (socket) => {
@@ -12,17 +11,21 @@ export default async function socketHandler(io) {
         return;
       }
       socket.join(roomID);
+      const chatRoom = io.sockets.adapter.rooms.get(roomID);
+      const count = chatRoom ? chatRoom.size : 0;
+      io.to(roomID).emit("roomCount", count);
       console.log(`📦 Socket ${socket.id} joined room ${roomID}`);
     });
     socket.on("message", async (msg) => {
       console.log("💬 Message received:", msg);
 
       try {
-        const { roomID, senderUsername, content } = msg;
+        const { roomID, senderUsername, content, avatar } = msg;
         await Message.create({
           roomID,
           senderUsername: senderUsername,
           content,
+          avatar,
         });
         io.to(roomID).emit("message", msg);
       } catch (err) {
@@ -32,6 +35,13 @@ export default async function socketHandler(io) {
     });
 
     socket.on("disconnect", () => {
+      socket.rooms.forEach((roomID) => {
+        if (roomID !== socket.id) {
+          const room = io.sockets.adapter.rooms.get(roomID);
+          const count = room ? room.size : 0;
+          io.to(roomID).emit("roomCount", count);
+        }
+      });
       console.log("❌ Client disconnected:", socket.id);
     });
   });
